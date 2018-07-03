@@ -7,9 +7,10 @@ import json
 import multiprocessing
 from subprocess import check_output, Popen
 
-WARMUP_INTERVAL = 60
+WARMUP_INTERVAL = 90
 SAMPLE_COUNT = 60 * 5
 SAMPLE_INTERVAL = 1
+STRESS_TIME = 600
 
 
 def clear_screen():
@@ -99,10 +100,21 @@ def print_summary(summary):
             print('    {}: {:.1f}'.format(k, v))
 
 
-def start_stress():
-    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count())]
+def start_cpustress():
+    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
     print(cmd)
     return Popen(cmd)
+
+
+def start_gpustress():
+    cmd = ['./gpu_burn', str(WARMUP_INTERVAL + STRESS_TIME)]
+    print(cmd)
+    return Popen(cmd)
+
+
+def start_stress():
+    start_cpustress()
+    start_gpustress()
 
 def wait_for_warmup():
     print('Waiting {} seconds for warmup...'.format(WARMUP_INTERVAL))
