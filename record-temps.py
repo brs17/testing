@@ -15,7 +15,15 @@ SAMPLE_INTERVAL = 1
 def clear_screen():
     print('\x1b[H\x1b[2J', end='')
 
-
+#NOTE:perhaps something like this if setup.sh didn't exist
+#def read_sensors():
+#    try:
+#        output = check_output(['sensors']).decode()
+#    except FileNotFoundError:
+#        print("sensors is not installed, installing...")
+#        check_output(["sudo", "apt-get", "install", "lm-sensors"])
+#        output = check_output(['sensors']).decode()
+#    return output
 def read_sensors():
     return check_output(['sensors']).decode()
 
@@ -95,7 +103,6 @@ def start_stress():
     cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count())]
     print(cmd)
     return Popen(cmd)
-
 
 def wait_for_warmup():
     print('Waiting {} seconds for warmup...'.format(WARMUP_INTERVAL))

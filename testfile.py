@@ -1,10 +1,12 @@
 #!/usr/bin/python3
-from subprocess import check_output, CalledProcessError
+#from subprocess import check_output, CalledProcessError
+import subprocess
 
 def read_sensors():
-    return check_output(['sensors']).decode()
+    return subprocess.check_output(['sensors']).decode()
 
 try:
     read_sensors()
-except CalledProcessError:
-    print("hi there")
+except FileNotFoundError:
+    print("sensors is not installed, installing...")
+    subprocess.check_output(["sudo", "apt", "install", "lm-sensors"])
