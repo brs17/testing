@@ -112,10 +112,6 @@ def start_gpustress():
     return Popen(cmd)
 
 
-def start_stress():
-    start_cpustress()
-    start_gpustress()
-
 def wait_for_warmup():
     print('Waiting {} seconds for warmup...'.format(WARMUP_INTERVAL))
     time.sleep(WARMUP_INTERVAL)
@@ -131,11 +127,14 @@ def run():
     print_summary(summary)
 
 
-p = start_stress()
+p = start_cpustress()
+q = start_gpustress()
 try:
     wait_for_warmup()
     run()
 finally:
     p.terminate()
+    q.terminate()
     p.wait()
+    q.wait()
 
