@@ -8,10 +8,9 @@ import multiprocessing
 from subprocess import check_output, Popen
 
 WARMUP_INTERVAL = 90
-SAMPLE_COUNT = 60 * 5
 SAMPLE_INTERVAL = 1
 STRESS_TIME = 600
-
+SAMPLE_COUNT = STRESS_TIME
 
 def clear_screen():
     print('\x1b[H\x1b[2J', end='')
@@ -36,7 +35,10 @@ def iter_temps(text):
             if label in ('temp1', 'temp2'):
                 continue
             m = re.match('\s*\+(\d+)', tail)
-            temp = float(m.group(1))
+            if m: #check if regex match exists
+                temp = float(m.group(1))
+            else:   #make sure something happens
+                temp = float(0)
             yield (label, temp)
 
 
@@ -101,7 +103,7 @@ def print_summary(summary):
 
 
 def start_cpustress():
-    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
+    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '--vm', str(2), '--vm-bytes', str('95%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
     print(cmd)
     return Popen(cmd)
 
