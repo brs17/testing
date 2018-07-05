@@ -12,6 +12,8 @@ SAMPLE_INTERVAL = 1
 STRESS_TIME = 600
 SAMPLE_COUNT = STRESS_TIME
 
+custname = input("What would you like to call this test?\n")
+
 def clear_screen():
     print('\x1b[H\x1b[2J', end='')
 
@@ -83,13 +85,13 @@ def record_temps(count=SAMPLE_COUNT, interval=SAMPLE_INTERVAL):
     return raw
 
 
-def dump_raw(start_ts, raw):
-    filename = 'temps-{}-raw.json'.format(start_ts)
+def dump_raw(custname, raw):
+    filename = 'temps-{}-raw.json'.format(custname)
     with open(filename, 'x') as fp:
         json.dump(raw, fp, indent=4, sort_keys=True)
 
-def dump_summary(start_ts, summary):
-    filename = 'temps-{}-summary.json'.format(start_ts)
+def dump_summary(custname, summary):
+    filename = 'temps-{}-summary.json'.format(custname)
     with open(filename, 'x') as fp:
         json.dump(summary, fp, indent=4, sort_keys=True)
 
@@ -103,7 +105,11 @@ def print_summary(summary):
 
 
 def start_cpustress():
-    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '--vm', str(2), '--vm-bytes', str('95%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
+    #return check_output(['sensors']).decode()
+    vm = check_output(['sudo', 'dmidecode', '-t', 'memory', '|', 'grep', \
+            '-v', 'No', '|', 'wc', '-l']).decode()
+    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '--vm', \
+            str(vm), '--vm-bytes', str('90%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
     print(cmd)
     return Popen(cmd)
 
@@ -127,7 +133,6 @@ def run():
     summary = analyze_temps(raw)
     dump_summary(start_ts, summary)
     print_summary(summary)
-
 
 p = start_cpustress()
 q = start_gpustress()
