@@ -1,0 +1,10 @@
+1.
+Determine number of RAM sticks: 
+`sudo dmidecode -t memory | Size:` 
+If line returns `No Module Installed` don't count it, otherwise count
+`--vm  #of sticks`
+
+2.
+Figure out what stats currently being recorded aren't being recorded properly
+
+3. Take in info for naming file
