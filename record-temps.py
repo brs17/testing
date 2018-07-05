@@ -12,10 +12,10 @@ SAMPLE_INTERVAL = 1
 STRESS_TIME = 600
 SAMPLE_COUNT = STRESS_TIME
 
-custname = input("What would you like to call this test?\n")
 
 def clear_screen():
     print('\x1b[H\x1b[2J', end='')
+
 
 #NOTE:perhaps something like this if setup.sh didn't exist
 #def read_sensors():
@@ -106,10 +106,10 @@ def print_summary(summary):
 
 def start_cpustress():
     #return check_output(['sensors']).decode()
-    vm = check_output(['sudo', 'dmidecode', '-t', 'memory', '|', 'grep', \
-            '-v', 'No', '|', 'wc', '-l']).decode()
+    #vm = check_output(['sudo', 'dmidecode', '-t', 'memory', '|', 'grep', \
+    #        '-v', 'No', '|', 'wc', '-l']).decode()
     cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '--vm', \
-            str(vm), '--vm-bytes', str('90%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
+            str(2), '--vm-bytes', str('90%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
     print(cmd)
     return Popen(cmd)
 
@@ -129,10 +129,12 @@ def run():
     start_ts = int(time.time())
     print('Start at {}'.format(start_ts))
     raw = record_temps()
-    dump_raw(start_ts, raw)
+    dump_raw(custname, raw)
     summary = analyze_temps(raw)
-    dump_summary(start_ts, summary)
+    dump_summary(custname, summary)
     print_summary(summary)
+
+custname = input("What would you like to call this test?\n")
 
 p = start_cpustress()
 q = start_gpustress()
