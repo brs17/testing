@@ -23,6 +23,18 @@ def read_sensors():
     return check_output(['sensors']).decode()
 
 
+def read_cpuclock():
+    return check_output(['grep', '-i', 'MHz', '/proc/cpuinfo']).decode()
+
+
+def iter_cpuclock(text):
+    for line in text.splitlines():
+        if ':' in line:
+            (label, tail) = line.split(':')
+                print("printing label: ",label)
+                print("printing tail: ", tail)
+
+
 def iter_temps(text):
     for line in text.splitlines():
         if ':' in line and not line.startswith('Adapter:'):
