@@ -8,9 +8,9 @@ import multiprocessing
 from subprocess import check_output, Popen
 from os import path, makedirs
 
-WARMUP_INTERVAL = 90
+WARMUP_INTERVAL = 1
 SAMPLE_INTERVAL = 1
-STRESS_TIME = 600
+STRESS_TIME = 3
 SAMPLE_COUNT = STRESS_TIME
 TESTDIR = '../testresults/'
 
@@ -19,6 +19,15 @@ def clear_screen():
     print('\x1b[H\x1b[2J', end='')
 
 
+#NOTE:perhaps something like this if setup.sh didn't exist
+#def read_sensors():
+#    try:
+#        output = check_output(['sensors']).decode()
+#    except FileNotFoundError:
+#        print("sensors is not installed, installing...")
+#        check_output(["sudo", "apt-get", "install", "lm-sensors"])
+#        output = check_output(['sensors']).decode()
+#    return output
 def read_sensors():
     return check_output(['sensors']).decode()
 
@@ -102,16 +111,13 @@ def print_summary(summary):
 
 
 def start_cpustress():
-    cmd = ['stress-ng', '-c', str(multiprocessing.cpu_count()), '--vm', \
-            str(2), '--vm-bytes', str('80%'), '-t', str(WARMUP_INTERVAL + STRESS_TIME)]
-    print(cmd)
-    return Popen(cmd)
+    print("cputesting")
+    return 0
 
 
 def start_gpustress():
-    cmd = ['./gpu_burn', str(WARMUP_INTERVAL + STRESS_TIME)]
-    print(cmd)
-    return Popen(cmd)
+    print("gputesting")
+    return 0
 
 
 def wait_for_warmup():
@@ -128,17 +134,12 @@ def run():
     dump_summary(custname, summary)
     print_summary(summary)
 
-
 custname = input("What would you like to call this test?\n")
+curdate = time.localtime()
+custname = custname + '-' + str(curdate[0]) + '-' + str(curdate[1]) + '-' + str(curdate[2])
 
 p = start_cpustress()
 q = start_gpustress()
-try:
-    wait_for_warmup()
-    run()
-finally:
-    p.terminate()
-    q.terminate()
-    p.wait()
-    q.wait()
+wait_for_warmup()
+run()
 
