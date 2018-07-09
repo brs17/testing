@@ -9,9 +9,9 @@ sudo apt install -y \
     stress-ng \
     nvidia-cuda-toolkit \
     nvidia-cuda-dev \
-    python-pip
+    python3-pip
 
-pip install psutil
+pip3 install psutil
 wget http://wili.cc/blog/entries/gpu-burn/gpu_burn-0.9.tar.gz
 tar -zxf gpu_burn-0.9.tar.gz
 make
