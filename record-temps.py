@@ -14,7 +14,7 @@ SAMPLE_INTERVAL = 1
 STRESS_TIME = 600
 GATHER_TIME = 60
 SAMPLE_COUNT = STRESS_TIME
-TESTDIR = '../testresults/' 
+TESTDIR = 'testresults/' 
 
 
 def clear_screen():
