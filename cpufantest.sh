@@ -1,23 +1,26 @@
 #!/bin/bash
 #setup autostart and autologin
 if [ ! -f ~/.config/autostart/cpufantest.desktop ]; then
-    echo '
-    [Desktop Entry]
-    Type=Application
-    Exec=sh -c "gnome-terminal ~/cpufantest.sh"
-    Hidden=false
-    NoDisplay=false
-    X-GNOME-Autostart-enabled=true
-    Name=cpufantest
-    ' >> ~/.config/autostart/cpufantest.desktop
-    sed -i -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
-    sed -i -e 's/#  AutomaticLogin = user1/AutomaticLogin = $USER/g' /etc/gdm3/custom.conf
-
+    mkdir -p ~/.config/autostart
+    touch ~/.config/autostart/cpufantest.desktop
+    cat >~/.config/autostart/cpufantest.desktop << EOL
+[Desktop Entry]
+Type=Application
+Exec=sh -c "gnome-terminal ~/cpufantest.sh"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=cpufantest
+EOL
+    sudo sed -i -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
+    sudo sed -i -e 's/#  AutomaticLogin = user1/AutomaticLogin = $USER/g' /etc/gdm3/custom.conf
+    sudo apt update
+    sudo apt install lm-sensors
+    sudo sensors-detect
 fi
-#cat >~/.config/autostart/cpufantest.desktop << EOL
 
 #Run tests
-REBOOT_DURATION=$(( RANDOM%180+180 )) #random reboot between 3-5 minutes
+REBOOT_DURATION=$(( RANDOM%120+180 )) #random reboot between 3-5 minutes
 FAN_SPEED="`sensors | grep "CPU fan" | awk '{print $3 "\t"}'`"
 if [ "$FAN_SPEED" -eq 0 ]
 then
