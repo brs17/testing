@@ -2,22 +2,21 @@
 #setup autostart and autologin
 if [ ! -f ~/.config/autostart/cpufantest.desktop ]; then
     mkdir -p ~/.config/autostart
-    touch ~/.config/autostart/cpufantest.desktop
-    cat >~/.config/autostart/cpufantest.desktop << EOL
-[Desktop Entry]
-Type=Application
-Exec=sh -c "gnome-terminal +x ~/cpufantest.sh"
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-Name=cpufantest
-EOL
     sudo sed -i -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
     sudo sed -i -e "s/#  AutomaticLogin = user1/AutomaticLogin = $USER/g" "/etc/gdm3/custom.conf"
     sudo apt update
     sudo apt install lm-sensors
     sudo sensors-detect
 fi
+cat >~/.config/autostart/cpufantest.desktop << EOL
+[Desktop Entry]
+Type=Application
+Exec=sh -c "gnome-terminal -e ~/cpufantest.sh"
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=cpufantest
+EOL
 
 #Run tests
 REBOOT_DURATION=$(( RANDOM%120+180 )) #random reboot between 3-5 minutes
