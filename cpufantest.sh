@@ -13,7 +13,7 @@ X-GNOME-Autostart-enabled=true
 Name=cpufantest
 EOL
     sudo sed -i -e 's/#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/g' /etc/gdm3/custom.conf
-    sudo sed -i -e 's/#  AutomaticLogin = user1/AutomaticLogin = $USER/g' /etc/gdm3/custom.conf
+    sudo sed -i -e "s/#  AutomaticLogin = user1/AutomaticLogin = $USER/g" "/etc/gdm3/custom.conf"
     sudo apt update
     sudo apt install lm-sensors
     sudo sensors-detect
