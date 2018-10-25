@@ -6,7 +6,7 @@ if [ ! -f ~/.config/autostart/cpufantest.desktop ]; then
     cat >~/.config/autostart/cpufantest.desktop << EOL
 [Desktop Entry]
 Type=Application
-Exec=sh -c "gnome-terminal ~/cpufantest.sh"
+Exec=sh -c "gnome-terminal +x ~/cpufantest.sh"
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
